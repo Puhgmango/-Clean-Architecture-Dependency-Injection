@@ -218,3 +218,57 @@ Theo thứ tự ưu tiên:
 5. **Đổi tên theo đúng nội dung** (`Product...`, thư mục `products`) và tách Model khỏi Entity bằng phương thức `toEntity()`.
 6. **Mở rộng tính năng.** Thêm UseCase lấy chi tiết sản phẩm, phân trang, lọc theo danh mục; thêm `LocalDataSource` (cache) để Repository điều phối giữa mạng và bộ nhớ cục bộ, hỗ trợ ngoại tuyến.
 7. **Tự động hóa chất lượng.** Cài `flutter_lints` để phân tích tĩnh, thiết lập CI (ví dụ GitHub Actions) chạy `flutter analyze` và `flutter test` mỗi lần đẩy code.
+
+## 🚀 Hướng Dẫn Cài Đặt & Chạy Dự Án
+
+### 1. Yêu cầu hệ thống
+* Flutter SDK (phiên bản `>= 3.0.0`)
+* Dart SDK tương ứng
+* Trình duyệt Web (Chrome / Edge), thiết bị giả lập (Android Emulator / iOS Simulator) hoặc máy ảo Windows.
+
+### 2. Cài đặt các gói phụ thuộc (Dependencies)
+Mở terminal tại thư mục gốc của dự án và chạy lệnh sau để tải các package:
+flutter pub get
+
+3. Sinh mã tự động (Build Runner - Code Generation)
+Nếu dự án có cập nhật các dependency sử dụng injectable:
+dart run build_runner build --delete-conflicting-outputs
+
+4. Chạy ứng dụng (Run App)
+Chạy trên thiết bị mặc định:
+flutter run
+
+Chạy trên trình duyệt Web (Chrome):
+flutter run -d chrome
+
+Chạy trên ứng dụng Desktop Windows:
+flutter run -d windows
+
+5. Chạy kiểm thử tự động (Run Tests)
+Chạy toàn bộ các bài test trong dự án:
+flutter test
+
+Chạy riêng test tầng Presentation (Cubit test):
+flutter test test/features/posts/presentation/
+
+Chạy riêng Widget Test:
+flutter test test/widget_test.dart
+
+🌐 Nguồn API Sử Dụng
+Dự án sử dụng REST API mẫu từ JSONPlaceholder để thực hiện lấy dữ liệu bài đăng (Posts):
+
+Base URL: https://jsonplaceholder.typicode.com
+
+Endpoint lấy danh sách bài viết:
+
+GET /posts
+
+Định dạng dữ liệu trả về: JSON (List<Map<String, dynamic>>) bao gồm các trường:
+
+userId: ID người tạo bài viết.
+
+id: Mã định danh bài viết.
+
+title: Tiêu đề bài viết.
+
+body: Nội dung chi tiết bài viết.
