@@ -169,7 +169,7 @@ Nhóm gồm 2 sinh viên. Tóm tắt theo vai trò:
 
 | Vai trò | Người phụ trách | Nội dung chính | File chính |
 |---|---|---|---|
-| **Logic** | Phạm Viết Duy | Entity, interface Repository, UseCase, Failure, unit test Domain bằng mock | `domain/`, `core/error/failures.dart`, `test/.../domain/` |
+| **Bussiness Logic** | Phạm Viết Duy | Entity, interface Repository, UseCase, Failure, unit test Domain bằng mock | `domain/`, `core/error/failures.dart`, `test/.../domain/` |
 | **State Management** | Phạm Viết Duy | `PostState`, `PostCubit` (chỉ gọi UseCase), test Cubit bằng `bloc_test` | `presentation/cubit/`, `test/.../presentation/` |
 | **Database/API** | Cao Minh Phụng | Kết nối REST API DummyJSON, `PostModel`, DataSource, `PostRepositoryImpl`, test Data | `data/`, `test/.../data/` |
 | **UI Design** | Cao Minh Phụng | Màn hình danh sách, tìm kiếm, chi tiết sản phẩm, trạng thái loading/lỗi | `presentation/pages/post_page.dart` |
