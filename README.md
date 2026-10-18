@@ -163,7 +163,7 @@ test/
     └── presentation/  post_cubit_test.dart
 ```
 
-## 11. Bảng phân công (phần người A)
+## 11. Bảng phân công
 
 Nhóm gồm 2 sinh viên. Tóm tắt theo vai trò:
 
