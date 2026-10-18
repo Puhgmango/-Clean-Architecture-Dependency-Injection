@@ -57,7 +57,7 @@ GetPostsUseCase ──► PostRepository (interface, Domain) ◄── PostRepos
 
 Khi đổi nguồn dữ liệu (REST sang GraphQL, thêm cache), chỉ sửa lớp Data; Domain và Presentation giữ nguyên.
 
-## 5. Chi tiết lớp Domain (phần của người A)
+## 5. Chi tiết lớp Domain
 
 ### 5.1 Entity: `domain/entities/post_entity.dart`
 
