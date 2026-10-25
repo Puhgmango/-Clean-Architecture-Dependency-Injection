@@ -1,62 +1,62 @@
-import 'package:cadi/models/product.dart';
-import 'package:cadi/services/product_service.dart';
-import 'package:cadi/viewmodels/product_viewmodel.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:flutter/foundation.dart';
 
-class MockProductService extends Mock implements ProductService {}
+import '../models/product.dart';
+import '../services/product_service.dart';
 
-Product makeProduct(int id, String title) => Product(
-      id: id,
-      title: title,
-      description: '',
-      category: 'test',
-      price: 1,
-      rating: 4,
-      thumbnail: '',
-    );
+enum ViewState { loading, success, error }
 
-void main() {
-  late MockProductService service;
-  late ProductViewModel vm;
+class ProductViewModel extends ChangeNotifier {
+  final ProductService _service;
 
-  setUp(() {
-    service = MockProductService();
-    vm = ProductViewModel(service);
-  });
+  ProductViewModel(this._service);
 
-  test('thành công: loading → success', () async {
-    when(() => service.fetchProducts()).thenAnswer(
-        (_) async => [makeProduct(1, 'Essence Mascara'), makeProduct(2, 'Red Lipstick')]);
-    final states = <ViewState>[];
-    vm.addListener(() => states.add(vm.state));
+  ViewState _state = ViewState.loading;
+  List<Product> _all = [];
+  List<Product> _visible = [];
+  String _errorMessage = '';
+  String _query = '';
+  bool _disposed = false;
 
-    await vm.fetchProducts();
+  ViewState get state => _state;
+  List<Product> get products => _visible;
+  String get errorMessage => _errorMessage;
 
-    expect(states, [ViewState.loading, ViewState.success]);
-    expect(vm.products.length, 2);
-  });
+  Future<void> fetchProducts() async {
+    _state = ViewState.loading;
+    notifyListeners();
+    try {
+      _all = await _service.fetchProducts();
+      _applyFilter();
+      _state = ViewState.success;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _state = ViewState.error;
+    }
+    notifyListeners();
+  }
 
-  test('thất bại: loading → error và giữ thông báo lỗi', () async {
-    when(() => service.fetchProducts())
-        .thenAnswer((_) async => throw ServiceException('Không có mạng'));
-    final states = <ViewState>[];
-    vm.addListener(() => states.add(vm.state));
+  void search(String query) {
+    _query = query;
+    _applyFilter();
+    notifyListeners();
+  }
 
-    await vm.fetchProducts();
+  void _applyFilter() {
+    final keyword = _query.trim().toLowerCase();
+    _visible = keyword.isEmpty
+        ? _all
+        : _all.where((p) => p.title.toLowerCase().contains(keyword)).toList();
+  }
 
-    expect(states, [ViewState.loading, ViewState.error]);
-    expect(vm.errorMessage, 'Không có mạng');
-  });
+  // Tránh lỗi nếu View đã đóng mà request còn chạy
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
+  }
 
-  test('search không phân biệt hoa thường', () async {
-    when(() => service.fetchProducts()).thenAnswer(
-        (_) async => [makeProduct(1, 'Essence Mascara'), makeProduct(2, 'Red Lipstick')]);
-    await vm.fetchProducts();
-
-    vm.search('  MASCARA ');
-
-    expect(vm.products.length, 1);
-    expect(vm.products.first.title, 'Essence Mascara');
-  });
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
 }
